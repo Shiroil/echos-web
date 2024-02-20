@@ -1,10 +1,21 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
+  <!-- <nav>
+    <v-btn @click="toggleTheme">Home</v-btn> |
     <router-link to="/about">About</router-link>
-  </nav>
+  </nav> -->
   <router-view />
 </template>
+
+<script setup lang="ts">
+import { useTheme } from 'vuetify';
+const theme = useTheme()
+
+const toggleTheme = (() => {
+  console.log(theme)
+  theme.global.name.value = theme.global.current.value.dark ? 'myCustomLightTheme' : 'myCustomLightTheme2' 
+})
+
+</script>
 
 <style lang="less">
 #app {
