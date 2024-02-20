@@ -11,17 +11,17 @@
         {{ item.name }}
       </div>
       <div class="selectorFrame">
-        <v-btn v-for="(singleItem, indexData) in item.data" :class="singleItem.selected ? 'selectFrame' : 'unSelectFrame'" @click="tagClick(indexArr, indexData)">
+        <v-btn v-for="(singleItem, indexData) in item.data" :class="singleItem.selected ? 'selectFrame' : 'unSelectFrame'" @click="tagClick(indexArr, indexData, singleItem)">
           {{ singleItem.name }}
         </v-btn>
-        <v-btn @click="validate"></v-btn>
+        <v-btn @click="submit"></v-btn>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, ref, watch, getCurrentInstance } from 'vue';
 import type { PropType, Ref } from 'vue';
 import './styles.less'
 
@@ -38,13 +38,13 @@ interface tag {
 
 export default defineComponent({
   name: 'mySelector',
-  data: () => ({
-    inputData: '',
-    inputRules: [
-      (v: string) => !!v || 'required',
-      
-    ]
-  }),
+  // data: () => ({
+  //   inputData: '',
+  //   starNum: '',
+  //   inputRules: [
+  //     (v: string) => !!v || 'required',
+  //   ]
+  // }),
   props: {
     arr: Array as () => tag[]
   },
@@ -54,20 +54,32 @@ export default defineComponent({
     }
   },
   methods: {
-    async validate() {
-      const { valid } = await (this.$refs.form as any).validate();
-      if(valid) console.log(this.inputData)
-    }
+    
   },
   emits: ['selectTag'],
   setup(props, ctx) {
-    const tagClick = (index1: number, index2: number) => {
-      console.log(props)
+    let inputData = ref('')
+    let starNum = ref('')
+    let form = ref()
+    const inputRules = [
+      (v: string) => !!v || 'required'
+    ]
+    const submit = (async () => {
+      const { valid } = await form.value.validate();
+      if(valid) console.log(inputData.value, 'qqqw')
+    })
+    const tagClick = (index1: number, index2: number, singleItem: tagValue) => {
+      console.log(props, form.value.validate())
+      // starNum.value = singleItem
       ctx.emit('selectTag', index1, index2)
     }
     return {
       props,
-      tagClick
+      tagClick,
+      inputData,
+      inputRules,
+      form,
+      submit
     }
   }
 })
